@@ -7,8 +7,8 @@ void kernel_main(void)
 	terminal_initialize();
 
 	for (;;) {
-		printf("helooooo\n new lined me -> ");
-		printf("again\n");
-		printf("43\n");
+		printf("helooooo new lined me -> ");
+		printf("new line \n inbetween -> ");
+		printf("its me again\n");
 	}
 }
