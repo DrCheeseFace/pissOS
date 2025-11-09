@@ -1,4 +1,4 @@
-file myos.bin
+file kernel/pissos.kernel
 
 target remote :1234
 
