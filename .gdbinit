@@ -1,3 +1,7 @@
+define hook-quit
+    set confirm off
+end
+
 file kernel/pissos.kernel
 
 target remote :1234

@@ -5,7 +5,10 @@
 void kernel_main(void)
 {
 	terminal_initialize();
+
 	for (;;) {
-		printf("Hello, kernel World!\n");
+		printf("helooooo\n new lined me -> ");
+		printf("again\n");
+		printf("43\n");
 	}
 }
