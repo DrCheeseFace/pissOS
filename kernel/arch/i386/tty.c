@@ -44,16 +44,14 @@ void terminal_scroll(void)
 {
 	const void *second_line_ptr = (const void *)(VGA_MEMORY + VGA_WIDTH);
 
-	// x 2 because each vga character takes up 16bit
 	static const size_t bytes_to_shift_up =
-		(VGA_HEIGHT - 1) * VGA_WIDTH * 2;
+		(VGA_HEIGHT - 1) * VGA_WIDTH * sizeof(*VGA_MEMORY);
 	memcpy((void *)VGA_MEMORY, second_line_ptr, bytes_to_shift_up);
 }
 
 void terminal_delete_last_line(void)
 {
-	volatile unsigned short int *ptr =
-		(volatile unsigned short int *)VGA_MEMORY;
+	uint16_t *ptr = VGA_MEMORY;
 	ptr += VGA_WIDTH * (VGA_HEIGHT - 1);
 
 	for (int x = 0; x < (int)VGA_WIDTH; x++) {
