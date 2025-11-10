@@ -1,3 +1,3 @@
-find -iname "*.c" -o -iname "*.h" | xargs clang-format -i --verbose  
+find -iname "*.c" -o -iname "*.h" | xargs clang-format -i --verbose
 
 
