@@ -7,7 +7,7 @@
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
-static uint16_t *const VGA_MEMORY = (uint16_t *)0xB8000;
+static uint16_t *const VGA_MEMORY = (uint16_t *const)0xB8000;
 static size_t terminal_row;
 static size_t terminal_column;
 static uint8_t terminal_color;
@@ -43,6 +43,8 @@ void terminal_putentryat(unsigned char c, enum vga_color color, size_t x,
 void terminal_scroll(void)
 {
 	const void *second_line_ptr = (const void *)(VGA_MEMORY + VGA_WIDTH);
+
+	// x 2 because each vga character takes up 16bit
 	static const size_t bytes_to_shift_up =
 		(VGA_HEIGHT - 1) * VGA_WIDTH * 2;
 	memcpy((void *)VGA_MEMORY, second_line_ptr, bytes_to_shift_up);
@@ -72,10 +74,12 @@ void terminal_putchar(char c)
 		terminal_row = VGA_HEIGHT - 1;
 	}
 
-	if (uc == '\n') {
+	switch (uc) {
+	case '\n': // newline
 		terminal_column = 0;
 		terminal_row++;
-	} else {
+		break;
+	default: // regular ass character
 		terminal_putentryat(uc, terminal_color, terminal_column,
 				    terminal_row);
 		terminal_column++;
@@ -84,6 +88,7 @@ void terminal_putchar(char c)
 			terminal_column = 0;
 			terminal_row++;
 		}
+		break;
 	}
 }
 
