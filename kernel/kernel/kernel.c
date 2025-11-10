@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include <kernel/ssp.h>
 #include <kernel/tty.h>
 
 void kernel_main(void)
@@ -7,8 +8,7 @@ void kernel_main(void)
 	terminal_initialize();
 
 	for (;;) {
-		printf("helooooo new lined me -> ");
-		printf("new line \n inbetween -> ");
+		printf("heloooo new lined me -> ");
 		printf("its me again\n");
 	}
 }
