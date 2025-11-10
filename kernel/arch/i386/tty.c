@@ -13,7 +13,7 @@ static size_t terminal_column;
 static uint8_t terminal_color;
 static uint16_t *terminal_buffer;
 
-void terminal_initialize(void)
+void terminal_init(void)
 {
 	terminal_row = 0;
 	terminal_column = 0;
@@ -52,13 +52,11 @@ void terminal_scroll(void)
 
 void terminal_delete_last_line(void)
 {
-	int x;
-	volatile unsigned short int *ptr;
-
-	ptr = (volatile unsigned short int *)VGA_MEMORY;
+	volatile unsigned short int *ptr =
+		(volatile unsigned short int *)VGA_MEMORY;
 	ptr += VGA_WIDTH * (VGA_HEIGHT - 1);
 
-	for (x = 0; x < (int)VGA_WIDTH; x++) {
+	for (int x = 0; x < (int)VGA_WIDTH; x++) {
 		*ptr = 0;
 		ptr++;
 	}

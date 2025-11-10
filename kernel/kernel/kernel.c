@@ -5,7 +5,7 @@
 
 void kernel_main(void)
 {
-	terminal_initialize();
+	terminal_init();
 
 	for (;;) {
 		printf("heloooo new lined me -> ");
