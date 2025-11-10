@@ -7,18 +7,18 @@ __attribute__((__noreturn__)) void abort(void)
 
 	printf("kernel: panic: abort()\n");
 
-	asm volatile("cli");
+	__asm__ volatile("cli");
 
 	while (1) {
-		asm volatile("hlt");
+		__asm__ volatile("hlt");
 	}
 
 #else
 	// TODO: Abnormally terminate the process as if by SIGABRT.
 	printf("abort()\n");
-#endif
-
 	while (1) {
 	}
+#endif
+
 	__builtin_unreachable();
 }

@@ -1,8 +1,10 @@
-#include "vga.h"
 #include <kernel/tty.h>
+#include <kernel/vga.h>
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 static const size_t VGA_WIDTH = 80;
@@ -26,6 +28,8 @@ void terminal_init(void)
 			terminal_buffer[index] = vga_entry(' ', terminal_color);
 		}
 	}
+
+	printf("tty init OK\n");
 }
 
 void terminal_setcolor(uint8_t color)

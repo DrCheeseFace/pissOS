@@ -7,6 +7,7 @@ export HOST=${HOST:-$(./default-host.sh)}
 export AR=${HOST}-ar
 export AS=${HOST}-as
 export CC=${HOST}-gcc
+export NASM=nasm
 
 export PREFIX=/usr
 export EXEC_PREFIX=$PREFIX
@@ -26,6 +27,8 @@ export CFLAGS='-O2 -g \
  -Wshadow -Wswitch -Wundef -Wunused-but-set-parameter -Wcast-qual \
  -Wfloat-equal -Wnested-externs \
  -Wpedantic -pedantic-errors'
+
+export NASMFLAGS='-f elf -F dwarf -g'
 
 export CPPFLAGS=''
 

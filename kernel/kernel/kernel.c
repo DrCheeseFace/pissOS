@@ -1,13 +1,27 @@
 #include <stdio.h>
 
 #include <kernel/gdt.h>
+#include <kernel/idt.h>
 #include <kernel/ssp.h>
 #include <kernel/tty.h>
 
-void kernel_main(void)
+void init_systems(void)
 {
 	terminal_init();
 	gdt_init();
+	idt_init();
+}
+
+void kernel_main(void)
+{
+	init_systems();
+
+	volatile int x;
+	x = 1;
+	x--;
+	volatile int y;
+	y = 3 / x;
+	(void)y;
 
 	for (;;) {
 		printf("heloooo new lined me -> ");

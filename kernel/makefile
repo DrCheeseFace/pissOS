@@ -3,6 +3,7 @@ HOST?=DEFAULT_HOST
 HOSTARCH!=../target-triplet-to-arch.sh $(HOST)
 
 CFLAGS?=-O2 -g
+NASMFLAGS?=
 CPPFLAGS?=
 LDFLAGS?=
 LIBS?=
@@ -49,7 +50,7 @@ $(ARCHDIR)/crtend.o \
 $(ARCHDIR)/crtn.o \
 
 .PHONY: all clean install install-headers install-kernel
-.SUFFIXES: .o .c .S
+.SUFFIXES: .o .c .S .nasm
 
 all: pissos.kernel
 
@@ -65,6 +66,9 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 
 .S.o:
 	$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
+
+.nasm.o:
+	$(NASM) $(NASMFLAGS) -o $@ $<
 
 clean:
 	rm -f pissos.kernel
