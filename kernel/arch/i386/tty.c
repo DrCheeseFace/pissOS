@@ -10,7 +10,7 @@ static const size_t VGA_HEIGHT = 25;
 static uint16_t *const VGA_MEMORY = (uint16_t *)0xB8000;
 static size_t terminal_row;
 static size_t terminal_column;
-static enum vga_color terminal_color;
+static uint8_t terminal_color;
 static uint16_t *terminal_buffer;
 
 void terminal_initialize(void)
@@ -28,7 +28,7 @@ void terminal_initialize(void)
 	}
 }
 
-void terminal_setcolor(enum vga_color color)
+void terminal_setcolor(uint8_t color)
 {
 	terminal_color = color;
 }

@@ -30,8 +30,7 @@ int printf(const char *restrict format, ...)
 			while (format[amount] && format[amount] != '%')
 				amount++;
 			if (maxrem < amount) {
-				// TODO: Set errno to EOVERFLOW.
-				return -1;
+				return EOVERFLOW;
 			}
 			if (!print(format, amount))
 				return -1;
@@ -47,8 +46,7 @@ int printf(const char *restrict format, ...)
 			char c = (char)va_arg(parameters,
 					      int /* char promotes to int */);
 			if (!maxrem) {
-				// TODO: Set errno to EOVERFLOW.
-				return -1;
+				return EOVERFLOW;
 			}
 			if (!print(&c, sizeof(c)))
 				return -1;
@@ -58,8 +56,7 @@ int printf(const char *restrict format, ...)
 			const char *str = va_arg(parameters, const char *);
 			size_t len = strlen(str);
 			if (maxrem < len) {
-				// TODO: Set errno to EOVERFLOW.
-				return -1;
+				return EOVERFLOW;
 			}
 			if (!print(str, len))
 				return -1;
@@ -68,8 +65,7 @@ int printf(const char *restrict format, ...)
 			format = format_begun_at;
 			size_t len = strlen(format);
 			if (maxrem < len) {
-				// TODO: Set errno to EOVERFLOW.
-				return -1;
+				return EOVERFLOW;
 			}
 			if (!print(format, len))
 				return -1;
