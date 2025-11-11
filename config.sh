@@ -17,7 +17,7 @@ export INCLUDEDIR=$PREFIX/include
 
 # export CFLAGS='-O2 -g -fstack-protector-all -Werror -Wpointer-arith -Wcast-align -Wint-conversion -Wstrict-prototypes -Wwrite-strings -Waggregate-return -Wswitch-default -Wswitch-enum -Wunreachable-code -Wunused-parameter -Wuninitialized -Winit-self -Wbad-function-cast -Wcast-align -Wformat=2 -Wlogical-op -Wmissing-include-dirs -Wredundant-decls -Wsequence-point -Wshadow -Wswitch -Wundef -Wunused-but-set-parameter -Wcast-qual  -Wfloat-equal -Wnested-externs -Wpedantic  -pedantic-errors'
 
-export CFLAGS='-O2 -g \
+export CFLAGS='-O2 -ggdb \
  -fstack-protector-all \
  -Werror \
  -Wpointer-arith -Wcast-align -Wint-conversion -Wstrict-prototypes -Wwrite-strings \

@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#define VGA_BUFFER_ADDR 0xB8000
+#define VGA_WIDTH 80
+#define VGA_HEIGHT 25
+
 enum vga_color {
 	VGA_COLOR_BLACK = 0,
 	VGA_COLOR_BLUE = 1,

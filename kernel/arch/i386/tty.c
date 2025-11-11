@@ -7,9 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static const size_t VGA_WIDTH = 80;
-static const size_t VGA_HEIGHT = 25;
-static uint16_t *const VGA_MEMORY = (uint16_t *const)0xB8000;
+static uint16_t *const VGA_MEMORY = (uint16_t *const)VGA_BUFFER_ADDR;
 static size_t terminal_row;
 static size_t terminal_column;
 static uint8_t terminal_color;
