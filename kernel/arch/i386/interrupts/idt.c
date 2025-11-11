@@ -1,3 +1,4 @@
+#include <kernel/handlers.h>
 #include <kernel/idt.h>
 #include <kernel/utils.h>
 
@@ -8,10 +9,9 @@
 
 static idt_entry_t idt_entries[IDT_MAX_DESCRIPTORS];
 static idtr_t idt_ptr;
+void (*irq_routines[16])(struct InterruptRegisters *) = { 0 };
 
 extern void idt_flush(uint32_t);
-
-void (*irq_routines[16])(struct InterruptRegisters *) = { 0 };
 
 const char *exception_messages[] = { "division by zero",
 				     "debug",
@@ -45,6 +45,18 @@ const char *exception_messages[] = { "division by zero",
 				     "reserved",
 				     "reserved",
 				     "reserved" };
+
+void irq_handlers_init(void);
+
+static void idt_gate_set(uint8_t num, uint32_t base, uint16_t sel,
+			 uint8_t flags)
+{
+	idt_entries[num].base_low = base & 0xFFFF;
+	idt_entries[num].base_high = (base >> 16) & 0xFFFF;
+	idt_entries[num].sel = sel;
+	idt_entries[num].always0 = 0;
+	idt_entries[num].flags = flags | 0x60;
+}
 
 void idt_init(void)
 {
@@ -124,28 +136,20 @@ void idt_init(void)
 	idt_gate_set(128, (uint32_t)isr128, 0x08, 0x8E);
 	idt_gate_set(177, (uint32_t)isr177, 0x08, 0x8E);
 
+	outPortB(0x43, 0x36);
+	outPortB(0x40, 0x0);
+	outPortB(0x40, 0x0);
+
+	irq_handlers_init();
+
 	idt_flush((uint32_t)&idt_ptr);
 
 	printf("idt init OK\n");
 }
 
-void idt_gate_set(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags)
+void irq_handlers_init(void)
 {
-	idt_entries[num].base_low = base & 0xFFFF;
-	idt_entries[num].base_high = (base >> 16) & 0xFFFF;
-	idt_entries[num].sel = sel;
-	idt_entries[num].always0 = 0;
-	idt_entries[num].flags = flags | 0x60;
-}
-
-void isr_handler(struct InterruptRegisters *regs)
-{
-	if (regs->int_no < 32) {
-		printf(exception_messages[regs->int_no]);
-		printf("\n");
-		printf("system halting\n");
-		abort();
-	}
+	irq_install_handler(0, temp_timer_handler);
 }
 
 void irq_install_handler(int irq, void (*handler)(struct InterruptRegisters *r))
@@ -156,6 +160,16 @@ void irq_install_handler(int irq, void (*handler)(struct InterruptRegisters *r))
 void irq_uninstall_handler(int irq)
 {
 	irq_routines[irq] = 0;
+}
+
+void isr_handler(struct InterruptRegisters *regs)
+{
+	if (regs->int_no < 32) {
+		printf(exception_messages[regs->int_no]);
+		printf("\n");
+		printf("system halting\n");
+		abort();
+	}
 }
 
 void irq_handler(struct InterruptRegisters *regs)

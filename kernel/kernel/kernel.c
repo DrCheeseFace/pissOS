@@ -7,7 +7,7 @@
 
 void init_systems(void)
 {
-	terminal_init();
+	tty_init();
 	gdt_init();
 	idt_init();
 }
@@ -15,13 +15,6 @@ void init_systems(void)
 void kernel_main(void)
 {
 	init_systems();
-
-	volatile int x;
-	x = 1;
-	x--;
-	volatile int y;
-	y = 3 / x;
-	(void)y;
 
 	for (;;) {
 		printf("heloooo new lined me -> ");

@@ -6,6 +6,15 @@
 
 #define IDT_MAX_DESCRIPTORS 256
 
+#define PIC1 0x20 /* IO base address for master PIC */
+#define PIC2 0xA0 /* IO base address for slave PIC */
+#define PIC1_COMMAND PIC1
+#define PIC1_DATA (PIC1 + 1)
+#define PIC2_COMMAND PIC2
+#define PIC2_DATA (PIC2 + 1)
+
+#define PIC_EOI 0x20
+
 typedef struct {
 	uint16_t base_low; // The lower 16 bits of the ISR's address
 	uint16_t sel; // The GDT segment selector that the CPU will load into CS before calling the ISR
@@ -21,9 +30,14 @@ typedef struct {
 
 void idt_init(void);
 
-void idt_gate_set(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags);
-
 void isr_handler(struct InterruptRegisters *regs);
+
+void irq_handler(struct InterruptRegisters *regs);
+
+void irq_install_handler(int irq,
+			 void (*handler)(struct InterruptRegisters *r));
+
+void irq_uninstall_handler(int irq);
 
 extern void isr0(void);
 extern void isr1(void);

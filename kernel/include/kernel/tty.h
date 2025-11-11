@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-void terminal_init(void);
+void tty_init(void);
 
 void terminal_putchar(char c);
 
