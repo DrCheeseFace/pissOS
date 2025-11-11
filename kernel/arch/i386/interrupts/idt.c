@@ -1,5 +1,6 @@
 #include <kernel/idt.h>
-#include <kernel/irq_handlers.h>
+#include <kernel/misc.h>
+#include <kernel/timer.h>
 #include <kernel/utils.h>
 
 #include <stdint.h>
@@ -7,8 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-static idt_entry_t idt_entries[IDT_MAX_DESCRIPTORS];
-static idtr_t idt_ptr;
+global_variable idt_entry_t idt_entries[IDT_MAX_DESCRIPTORS];
+global_variable idtr_t idt_ptr;
 void (*irq_routines[16])(struct InterruptRegisters *) = { 0 };
 
 extern void idt_flush(uint32_t);
@@ -48,8 +49,8 @@ const char *exception_messages[] = { "division by zero",
 
 void irq_handlers_init(void);
 
-static void idt_gate_set(uint8_t num, uint32_t base, uint16_t sel,
-			 uint8_t flags)
+internal void idt_gate_set(uint8_t num, uint32_t base, uint16_t sel,
+			   uint8_t flags)
 {
 	idt_entries[num].base_low = base & 0xFFFF;
 	idt_entries[num].base_high = (base >> 16) & 0xFFFF;
@@ -66,20 +67,20 @@ void idt_init(void)
 	memset(idt_entries, 0, sizeof(idt_entries));
 
 	// initialize PICS
-	outPortB(PIC1, 0x11);
-	outPortB(PIC2, 0x11);
+	outb(PIC1, 0x11);
+	outb(PIC2, 0x11);
 
-	outPortB(PIC1_DATA, 0x20);
-	outPortB(PIC2_DATA, 0x28);
+	outb(PIC1_DATA, 0x20);
+	outb(PIC2_DATA, 0x28);
 
-	outPortB(PIC1_DATA, 0x04);
-	outPortB(PIC2_DATA, 0x02);
+	outb(PIC1_DATA, 0x04);
+	outb(PIC2_DATA, 0x02);
 
-	outPortB(PIC1_DATA, 0x01);
-	outPortB(PIC2_DATA, 0x01);
+	outb(PIC1_DATA, 0x01);
+	outb(PIC2_DATA, 0x01);
 
-	outPortB(PIC1_DATA, 0x0);
-	outPortB(PIC2_DATA, 0x0);
+	outb(PIC1_DATA, 0x0);
+	outb(PIC2_DATA, 0x0);
 
 	idt_gate_set(0, (uint32_t)isr0, 0x08, 0x8E);
 	idt_gate_set(1, (uint32_t)isr1, 0x08, 0x8E);
@@ -136,20 +137,15 @@ void idt_init(void)
 	idt_gate_set(128, (uint32_t)isr128, 0x08, 0x8E);
 	idt_gate_set(177, (uint32_t)isr177, 0x08, 0x8E);
 
-	outPortB(0x43, 0x36);
-	outPortB(0x40, 0x0);
-	outPortB(0x40, 0x0);
-
-	irq_handlers_init();
+	uint8_t control_byte = PIT_SC_CHANNEL0 | PIT_RW_LOBYTE_ONLY |
+			       PIT_MODE_3_SQ_WAVE | PIT_BIN_MODE;
+	outb(PIT_CMD_REG_PORT, control_byte);
+	outb(0x40, 0x0);
+	outb(0x40, 0x0);
 
 	idt_flush((uint32_t)&idt_ptr);
 
 	printf("idt init OK\n");
-}
-
-void irq_handlers_init(void)
-{
-	irq_install_handler(0, temp_timer_handler);
 }
 
 void irq_install_handler(int irq, void (*handler)(struct InterruptRegisters *r))
@@ -182,8 +178,8 @@ void irq_handler(struct InterruptRegisters *regs)
 	}
 
 	if (regs->int_no >= 40) {
-		outPortB(PIC2, PIC_EOI);
+		outb(PIC2, PIC_EOI);
 	}
 
-	outPortB(PIC1, PIC_EOI);
+	outb(PIC1, PIC_EOI);
 }

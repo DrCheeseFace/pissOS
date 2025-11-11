@@ -15,6 +15,31 @@
 
 #define PIC_EOI 0x20
 
+#define PIT_CH0_DATA_PORT 0x40
+#define PIT_CH1_DATA_PORT 0x41
+#define PIT_CH2_DATA_PORT 0x42
+#define PIT_CMD_REG_PORT 0x43
+
+#define PIT_SC_CHANNEL0 0x00
+#define PIT_SC_CHANNEL1 0x40
+#define PIT_SC_CHANNEL2 0x80
+#define PIT_SC_READBACK 0xC0
+
+#define PIT_RW_LATCH 0x00
+#define PIT_RW_LOBYTE_ONLY 0x10
+#define PIT_RW_HIBYTE_ONLY 0x20
+#define PIT_RW_LOHI_BYTE 0x30
+
+#define PIT_MODE_0_INT_TERM 0x00
+#define PIT_MODE_1_ONE_SHOT 0x02
+#define PIT_MODE_2_RATE_GEN 0x04
+#define PIT_MODE_3_SQ_WAVE 0x06
+#define PIT_MODE_4_SW_STROBE 0x08
+#define PIT_MODE_5_HW_STROBE 0x0A
+
+#define PIT_BIN_MODE 0x00
+#define PIT_BCD_MODE 0x01
+
 typedef struct {
 	uint16_t base_low; // The lower 16 bits of the ISR's address
 	uint16_t sel; // The GDT segment selector that the CPU will load into CS before calling the ISR

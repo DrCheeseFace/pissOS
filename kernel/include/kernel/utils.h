@@ -11,6 +11,8 @@ struct InterruptRegisters {
 	uint32_t eip, csm, eflags, useresp, ss;
 };
 
-void outPortB(uint16_t port, uint8_t value);
+void outb(uint16_t port, uint8_t value);
+
+uint8_t inb(uint16_t port);
 
 #endif

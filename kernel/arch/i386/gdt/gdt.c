@@ -1,4 +1,5 @@
 #include <kernel/gdt.h>
+#include <kernel/misc.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -6,9 +7,9 @@
 extern void gdt_flush(uint32_t);
 extern void tss_flush(uint32_t);
 
-static gdt_entry_t gdt_entries[6];
-static gdtr_t gdt_ptr;
-struct TssEntry tss_entry;
+global_variable gdt_entry_t gdt_entries[6];
+global_variable gdtr_t gdt_ptr;
+global_variable struct TssEntry tss_entry;
 
 void gdt_init(void)
 {

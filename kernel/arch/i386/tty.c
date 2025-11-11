@@ -1,3 +1,4 @@
+#include "kernel/misc.h"
 #include <kernel/tty.h>
 #include <kernel/vga.h>
 
@@ -7,11 +8,11 @@
 #include <stdio.h>
 #include <string.h>
 
-static uint16_t *const VGA_MEMORY = (uint16_t *const)VGA_BUFFER_ADDR;
-static size_t terminal_row;
-static size_t terminal_column;
-static uint8_t terminal_color;
-static uint16_t *terminal_buffer;
+global_variable uint16_t *const VGA_MEMORY = (uint16_t *const)VGA_BUFFER_ADDR;
+global_variable size_t terminal_row;
+global_variable size_t terminal_column;
+global_variable uint8_t terminal_color;
+global_variable uint16_t *terminal_buffer;
 
 void tty_init(void)
 {
@@ -46,7 +47,7 @@ void terminal_scroll(void)
 {
 	const void *second_line_ptr = (const void *)(VGA_MEMORY + VGA_WIDTH);
 
-	static const size_t bytes_to_shift_up =
+	local_persist const size_t bytes_to_shift_up =
 		(VGA_HEIGHT - 1) * VGA_WIDTH * sizeof(*VGA_MEMORY);
 	memcpy((void *)VGA_MEMORY, second_line_ptr, bytes_to_shift_up);
 }
@@ -76,6 +77,16 @@ void terminal_putchar(char c)
 	case '\n': // newline
 		terminal_column = 0;
 		terminal_row++;
+		break;
+	case '\b': // backspace
+		if (terminal_column != 0) {
+			terminal_column--;
+		} else {
+			terminal_row--;
+			terminal_column = VGA_WIDTH;
+		}
+		terminal_putentryat(' ', terminal_color, terminal_column,
+				    terminal_row);
 		break;
 	default: // regular ass character
 		terminal_putentryat(uc, terminal_color, terminal_column,
