@@ -1,5 +1,5 @@
-#include <kernel/handlers.h>
 #include <kernel/idt.h>
+#include <kernel/irq_handlers.h>
 #include <kernel/utils.h>
 
 #include <stdint.h>

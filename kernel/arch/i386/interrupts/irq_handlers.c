@@ -5,5 +5,5 @@
 void temp_timer_handler(struct InterruptRegisters *regs)
 {
 	(void)regs;
-	printf("temp_timer_handler_called");
+	printf("temp_timer_handler_called\n");
 }
