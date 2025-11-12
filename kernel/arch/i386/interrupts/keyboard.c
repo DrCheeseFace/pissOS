@@ -288,10 +288,11 @@ void irq_1_handler(unused struct InterruptRegisters *regs)
 
 void keyboard_init(void)
 {
-	irq_install_handler(1, &irq_1_handler);
 	CTRL_pressed = FALSE;
 	SHIFT_pressed = FALSE;
 	ALT_pressed = FALSE;
+
+	irq_install_handler(1, &irq_1_handler);
 }
 
 internal bool update_modifier_keys_state(enum PS2ScancodeSet1 scancode,
