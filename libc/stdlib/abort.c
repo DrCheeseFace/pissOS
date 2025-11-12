@@ -8,7 +8,8 @@ __attribute__((__noreturn__)) void abort(const char *err)
 
 	if (err != NULL) {
 		printf("kernel: panic: %s\n", err);
-	} else {
+	}
+	else {
 		printf("kernel: panic \n");
 	}
 

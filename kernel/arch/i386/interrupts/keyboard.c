@@ -273,18 +273,7 @@ const uint32_t uppercase[128] = { KEYBOARD_KEY_UNKNOWN,
 internal bool update_modifier_keys_state(enum PS2ScancodeSet1 scancode,
 					 bool press);
 internal void log_key_press(enum PS2ScancodeSet1 scancode);
-
-void irq_1_handler(unused struct InterruptRegisters *regs)
-{
-	char scancode = inb(PC_AC_KEYBOARD_CONTROLLER_PORT) & 0x7F;
-	char press = inb(PC_AC_KEYBOARD_CONTROLLER_PORT) & 0x80; // down or up
-
-	bool is_modifier = update_modifier_keys_state(scancode, press);
-
-	if (!is_modifier) {
-		log_key_press(scancode);
-	}
-}
+void irq_1_handler(unused struct InterruptRegisters *regs);
 
 void keyboard_init(void)
 {
@@ -301,6 +290,18 @@ void keyboard_init(void)
 #ifdef DEBUG_LOGGING
 	printf("initing keyboard OK\n");
 #endif
+}
+
+void irq_1_handler(unused struct InterruptRegisters *regs)
+{
+	char scancode = inb(PC_AC_KEYBOARD_CONTROLLER_PORT) & 0x7F;
+	char press = inb(PC_AC_KEYBOARD_CONTROLLER_PORT) & 0x80; // down or up
+
+	bool is_modifier = update_modifier_keys_state(scancode, press);
+
+	if (!is_modifier) {
+		log_key_press(scancode);
+	}
 }
 
 internal bool update_modifier_keys_state(enum PS2ScancodeSet1 scancode,
@@ -328,7 +329,8 @@ internal void log_key_press(enum PS2ScancodeSet1 scancode)
 {
 	if (SHIFT_pressed) {
 		printf("%c", uppercase[scancode]);
-	} else {
+	}
+	else {
 		printf("%c", lowercase[scancode]);
 	}
 	return;

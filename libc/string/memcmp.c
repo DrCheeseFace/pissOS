@@ -7,7 +7,8 @@ int memcmp(const void *aptr, const void *bptr, size_t size)
 	for (size_t i = 0; i < size; i++) {
 		if (a[i] < b[i]) {
 			return -1;
-		} else if (b[i] < a[i]) {
+		}
+		else if (b[i] < a[i]) {
 			return 1;
 		}
 	}

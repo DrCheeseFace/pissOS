@@ -102,7 +102,8 @@ int printf(const char *restrict format, ...)
 			if (!print(&c, sizeof(c)))
 				return -1;
 			written++;
-		} else if (*format == 's') {
+		}
+		else if (*format == 's') {
 			format++;
 			const char *str = va_arg(parameters, const char *);
 			size_t len = strlen(str);
@@ -112,7 +113,8 @@ int printf(const char *restrict format, ...)
 			if (!print(str, len))
 				return -1;
 			written += len;
-		} else if (*format == 'd') {
+		}
+		else if (*format == 'd') {
 			format++;
 			int i = va_arg(parameters, int);
 			char str[65];
@@ -124,7 +126,8 @@ int printf(const char *restrict format, ...)
 			if (!print(str, len))
 				return -1;
 			written += len;
-		} else {
+		}
+		else {
 			format = format_begun_at;
 			size_t len = strlen(format);
 			if (maxrem < len) {

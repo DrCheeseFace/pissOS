@@ -49,16 +49,8 @@ const char *exception_messages[] = { "division by zero",
 				     "reserved" };
 
 void irq_handlers_init(void);
-
 internal void idt_gate_set(uint8_t num, uint32_t base, uint16_t sel,
-			   uint8_t flags)
-{
-	idt_entries[num].base_low = base & 0xFFFF;
-	idt_entries[num].base_high = (base >> 16) & 0xFFFF;
-	idt_entries[num].sel = sel;
-	idt_entries[num].always0 = 0;
-	idt_entries[num].flags = flags | IDT_FLAG_USER_ACCESS;
-}
+			   uint8_t flags);
 
 void idt_init(void)
 {
@@ -207,6 +199,16 @@ void idt_init(void)
 #ifdef DEBUG_LOGGING
 	printf("init idt OK\n");
 #endif
+}
+
+internal void idt_gate_set(uint8_t num, uint32_t base, uint16_t sel,
+			   uint8_t flags)
+{
+	idt_entries[num].base_low = base & 0xFFFF;
+	idt_entries[num].base_high = (base >> 16) & 0xFFFF;
+	idt_entries[num].sel = sel;
+	idt_entries[num].always0 = 0;
+	idt_entries[num].flags = flags | IDT_FLAG_USER_ACCESS;
 }
 
 void irq_install_handler(int irq, void (*handler)(struct InterruptRegisters *r))

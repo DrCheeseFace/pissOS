@@ -83,7 +83,8 @@ void terminal_putchar(char c)
 	case '\b': // backspace
 		if (terminal_column != 0) {
 			terminal_column--;
-		} else {
+		}
+		else {
 			terminal_row--;
 			terminal_column = VGA_WIDTH;
 		}

@@ -44,8 +44,8 @@ BraceWrapping:
   #SplitEmptyFunction: true # Unknown to clang-format-4.0
   #SplitEmptyRecord: true # Unknown to clang-format-4.0
   #SplitEmptyNamespace: true # Unknown to clang-format-4.0
+BreakBeforeBraces: Stroustrup
 BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Custom
 #BreakBeforeInheritanceComma: false # Unknown to clang-format-4.0
 BreakBeforeTernaryOperators: false
 BreakConstructorInitializersBeforeComma: false
