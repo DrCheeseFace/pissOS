@@ -1,11 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-__attribute__((__noreturn__)) void abort(void)
+__attribute__((__noreturn__)) void abort(const char *err)
 {
 #if defined(__is_libk)
 
-	printf("kernel: panic: abort()\n");
+	if (err != NULL) {
+		printf("kernel: panic: %s\n", err);
+	} else {
+		printf("kernel: panic \n");
+	}
 
 	__asm__ volatile("cli");
 

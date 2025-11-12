@@ -15,7 +15,8 @@ export BOOTDIR=/boot
 export LIBDIR=$EXEC_PREFIX/lib
 export INCLUDEDIR=$PREFIX/include
 
-export CFLAGS='-O2 -ggdb \
+export CFLAGS='-O0 -ggdb \
+ -DDEBUG_LOGGING \
  -fstack-protector-all \
  -Werror \
  -Wpointer-arith -Wcast-align -Wint-conversion -Wstrict-prototypes -Wwrite-strings \

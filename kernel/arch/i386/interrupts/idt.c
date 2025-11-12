@@ -62,6 +62,10 @@ internal void idt_gate_set(uint8_t num, uint32_t base, uint16_t sel,
 
 void idt_init(void)
 {
+#ifdef DEBUG_LOGGING
+	printf("init idt\n");
+#endif
+
 	idt_ptr.limit = sizeof(idt_entries) - 1;
 	idt_ptr.base = (uint32_t)&idt_entries;
 
@@ -200,7 +204,9 @@ void idt_init(void)
 
 	idt_flush((uint32_t)&idt_ptr);
 
-	printf("idt init OK\n");
+#ifdef DEBUG_LOGGING
+	printf("init idt OK\n");
+#endif
 }
 
 void irq_install_handler(int irq, void (*handler)(struct InterruptRegisters *r))
@@ -216,10 +222,7 @@ void irq_uninstall_handler(int irq)
 void isr_handler(struct InterruptRegisters *regs)
 {
 	if (regs->int_no < 32) {
-		printf(exception_messages[regs->int_no]);
-		printf("\n");
-		printf("system halting\n");
-		abort();
+		abort(exception_messages[regs->int_no]);
 	}
 }
 

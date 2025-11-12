@@ -28,7 +28,9 @@ void tty_init(void)
 		}
 	}
 
+#ifdef DEBUG_LOGGING
 	printf("tty init OK\n");
+#endif
 }
 
 void terminal_setcolor(uint8_t color)

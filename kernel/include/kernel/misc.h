@@ -6,5 +6,6 @@
 #define local_persist static
 
 #define unused __attribute__((__unused__))
+#define ignore(i) (void)i
 
 #endif

@@ -7,36 +7,42 @@
 extern void gdt_flush(uint32_t);
 extern void tss_flush(uint32_t);
 
-global_variable gdt_entry_t gdt_entries[6];
+global_variable gdt_entry_t gdt_entries[GDT_SEGMENT_COUNT];
 global_variable gdtr_t gdt_ptr;
 global_variable struct TssEntry tss_entry;
 
 void gdt_init(void)
 {
+#ifdef DEBUG_LOGGING
+	printf("init gdt\n");
+#endif
+
 	gdt_ptr.limit = sizeof(gdt_entries) - 1;
 	gdt_ptr.base = (uint32_t)&gdt_entries;
 
-	gdt_gate_set(GDT_NULL_SEGMENT, 0, 0, 0, 0);
+	gdt_gate_set(GDT_SEGMENT_NULL, 0, 0, 0, 0);
 
-	gdt_gate_set(GDT_KCODE_SEGMENT, 0, 0XFFFFFFFF, GDT_ACCESS_KCODE,
+	gdt_gate_set(GDT_SEGMENT_KCODE, 0, 0XFFFFFFFF, GDT_ACCESS_KCODE,
 		     GDT_FLAGS_MAX_4G);
 
-	gdt_gate_set(GDT_KDATA_SEGMENT, 0, 0XFFFFFFFF, GDT_ACCESS_KDATA,
+	gdt_gate_set(GDT_SEGMENT_KDATA, 0, 0XFFFFFFFF, GDT_ACCESS_KDATA,
 		     GDT_FLAGS_MAX_4G);
 
-	gdt_gate_set(GDT_UCODE_SEGMENT, 0, 0XFFFFFFFF, GDT_ACCESS_UCODE,
+	gdt_gate_set(GDT_SEGMENT_UCODE, 0, 0XFFFFFFFF, GDT_ACCESS_UCODE,
 		     GDT_FLAGS_MAX_4G);
 
-	gdt_gate_set(GDT_UDATA_SEGMENT, 0, 0XFFFFFFFF, GDT_ACCESS_UDATA,
+	gdt_gate_set(GDT_SEGMENT_UDATA, 0, 0XFFFFFFFF, GDT_ACCESS_UDATA,
 		     GDT_FLAGS_MAX_4G);
 
-	tss_write(GDT_TSS_SEGMENT, GDT_SEL_KDATA, 0x0);
+	tss_write(GDT_SEGMENT_TSS, GDT_SEL_KDATA, 0x0);
 
 	gdt_flush((uint32_t)&gdt_ptr);
 
 	tss_flush((uint32_t)&tss_entry);
 
+#ifdef DEBUG_LOGGING
 	printf("gdt init OK\n");
+#endif
 }
 
 void gdt_gate_set(uint32_t num, uint32_t base, uint32_t limit, uint8_t access,

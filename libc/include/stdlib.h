@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-__attribute__((__noreturn__)) void abort(void);
+__attribute__((__noreturn__)) void abort(const char *err);
 
 #ifdef __cplusplus
 }
