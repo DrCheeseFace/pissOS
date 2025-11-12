@@ -2,7 +2,30 @@
 #define _KERNEL_GDT_H
 
 #include <stdint.h>
+
 #define GDT_OFFSET_KERNEL_CODE 0x08
+
+#define GDT_NULL_SEGMENT 0
+#define GDT_KCODE_SEGMENT 1
+#define GDT_KDATA_SEGMENT 2
+#define GDT_UCODE_SEGMENT 3
+#define GDT_UDATA_SEGMENT 4
+#define GDT_TSS_SEGMENT 5
+
+#define GDT_ACCESS_KCODE 0x9A
+#define GDT_ACCESS_KDATA 0x92
+#define GDT_ACCESS_UCODE 0xFA
+#define GDT_ACCESS_UDATA 0xF2
+
+#define GDT_FLAGS_MAX_4G 0xCF
+
+#define GDT_SEL_KDATA 0x10
+// requested privilege level for user mode (ring 3)
+#define RPL_USER_RING3 0x3
+
+// tss segment selectors (selector | rpl)
+#define TSS_SEL_KCODE (GDT_OFFSET_KERNEL_CODE | RPL_USER_RING3)
+#define TSS_SEL_UDATA (GDT_SEL_KDATA | RPL_USER_RING3)
 
 typedef struct {
 	uint16_t limit;

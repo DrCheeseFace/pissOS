@@ -6,6 +6,17 @@
 
 #define IDT_MAX_DESCRIPTORS 256
 
+#define IDT_GATE_TYPE_INTERRUPT_32BIT 0x0E
+#define IDT_DPL_KERNEL 0x00
+#define IDT_FLAG_PRESENT 0x80
+
+// 0x8E
+#define IDT_FLAG_KERNEL_INTERRUPT_GATE                                         \
+	(IDT_FLAG_PRESENT | IDT_DPL_KERNEL | IDT_GATE_TYPE_INTERRUPT_32BIT)
+
+#define IDT_DPL_USER 0x60
+#define IDT_FLAG_USER_ACCESS IDT_DPL_USER
+
 #define PIC1 0x20 /* IO base address for master PIC */
 #define PIC2 0xA0 /* IO base address for slave PIC */
 #define PIC1_COMMAND PIC1
@@ -14,6 +25,20 @@
 #define PIC2_DATA (PIC2 + 1)
 
 #define PIC_EOI 0x20
+
+#define ICW1_INIT 0x10 // initialization sequence starts
+#define ICW1_EDGE_TRIGGERED 0x01 // edge triggered mode
+#define ICW1_DEFAULT (ICW1_INIT | ICW1_EDGE_TRIGGERED) // 0x11
+
+#define PIC1_VECTOR_OFFSET 0x20 // master pic starts at interrupt vector 0x20
+#define PIC2_VECTOR_OFFSET 0x28 // slave pic starts at interrupt vector 0x28
+
+#define ICW3_SLAVE_ON_IRQ2 0x04 // master: slave is connected to irq 2
+#define ICW3_IS_SLAVE 0x02 // slave: i am a slave
+
+#define ICW4_8086_MODE 0x01 // set to 8086/8088 mode
+
+#define PIC_IMR_UNMASK_ALL 0x00 // unmask all interrupts
 
 #define PIT_CH0_DATA_PORT 0x40
 #define PIT_CH1_DATA_PORT 0x41

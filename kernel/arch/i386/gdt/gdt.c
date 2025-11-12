@@ -16,17 +16,21 @@ void gdt_init(void)
 	gdt_ptr.limit = sizeof(gdt_entries) - 1;
 	gdt_ptr.base = (uint32_t)&gdt_entries;
 
-	gdt_gate_set(0, 0, 0, 0, 0); // Null Descriptor
+	gdt_gate_set(GDT_NULL_SEGMENT, 0, 0, 0, 0);
 
-	gdt_gate_set(1, 0, 0XFFFFFFFF, 0x9A, 0xCF); // kernel mode code segment
+	gdt_gate_set(GDT_KCODE_SEGMENT, 0, 0XFFFFFFFF, GDT_ACCESS_KCODE,
+		     GDT_FLAGS_MAX_4G);
 
-	gdt_gate_set(2, 0, 0XFFFFFFFF, 0x92, 0xCF); // kernel mode data segment
+	gdt_gate_set(GDT_KDATA_SEGMENT, 0, 0XFFFFFFFF, GDT_ACCESS_KDATA,
+		     GDT_FLAGS_MAX_4G);
 
-	gdt_gate_set(3, 0, 0XFFFFFFFF, 0xFA, 0xCF); // user mode code segment
+	gdt_gate_set(GDT_UCODE_SEGMENT, 0, 0XFFFFFFFF, GDT_ACCESS_UCODE,
+		     GDT_FLAGS_MAX_4G);
 
-	gdt_gate_set(4, 0, 0XFFFFFFFF, 0xF2, 0xCF); // user mode data segment
+	gdt_gate_set(GDT_UDATA_SEGMENT, 0, 0XFFFFFFFF, GDT_ACCESS_UDATA,
+		     GDT_FLAGS_MAX_4G);
 
-	tss_write(5, 0x10, 0x0); // task management segment
+	tss_write(GDT_TSS_SEGMENT, GDT_SEL_KDATA, 0x0);
 
 	gdt_flush((uint32_t)&gdt_ptr);
 
@@ -61,7 +65,7 @@ void tss_write(uint32_t num, uint16_t ss0, uint32_t esp0)
 	tss_entry.ss0 = ss0;
 	tss_entry.esp0 = esp0;
 
-	tss_entry.cs = GDT_OFFSET_KERNEL_CODE | 0x3;
+	tss_entry.cs = GDT_OFFSET_KERNEL_CODE | RPL_USER_RING3;
 	tss_entry.ss = tss_entry.ds = tss_entry.es = tss_entry.fs =
-		tss_entry.gs = 0x10 | 0x3;
+		tss_entry.gs = GDT_SEL_KDATA | RPL_USER_RING3;
 }
