@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-struct InterruptRegisters {
+struct interrupt_resigters {
 	uint32_t cr2;
 	uint32_t ds;
 	uint32_t edi, esi, ibp, esp, ebx, edx, ecx, eax;

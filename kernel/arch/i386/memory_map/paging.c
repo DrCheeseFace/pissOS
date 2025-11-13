@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-global_variable enum PageFrameState page_frames_state[MAX_PAGE_FRAME_COUNT];
+global_variable enum page_frame_state page_frames_state[MAX_PAGE_FRAME_COUNT];
 global_variable uintptr_t page_frames_start_addr;
 global_variable size_t page_frames_len = 0;
 

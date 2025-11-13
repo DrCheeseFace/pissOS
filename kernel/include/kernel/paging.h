@@ -10,9 +10,9 @@
 typedef uintptr_t page_frame_t;
 #define ERROR 0xCAFEBABE
 
-enum PageFrameState {
+enum page_frame_state {
+	PAGE_FRAME_STATE_FREE = 0x00,
 	PAGE_FRAME_STATE_USED,
-	PAGE_FRAME_STATE_FREE,
 };
 
 void page_frames_init(multiboot_info_t *mbd);

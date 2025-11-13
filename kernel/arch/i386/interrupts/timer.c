@@ -7,7 +7,7 @@
 global_variable uint64_t ticks;
 global_variable const uint32_t freq = 1000;
 
-void irq_0_handler(unused struct InterruptRegisters *regs);
+void irq_0_handler(unused struct interrupt_resigters *regs);
 
 void timer_init(void)
 {
@@ -30,7 +30,7 @@ void timer_init(void)
 #endif
 }
 
-void irq_0_handler(unused struct InterruptRegisters *regs)
+void irq_0_handler(unused struct interrupt_resigters *regs)
 {
 	ticks++;
 }
