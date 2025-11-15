@@ -164,8 +164,8 @@ void kfree_frame(page_frame_t a)
 
 page_frame_t kmalloc_frame(void)
 {
-	static uint8_t allocate = 1;
-	static uint8_t pframe = 0;
+	local_persist uint8_t allocate = 1;
+	local_persist uint8_t pframe = 0;
 	page_frame_t ret;
 
 	if (pframe == BATCH_PAGES_ALLOCED_MAX) {
