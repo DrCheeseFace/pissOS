@@ -41,7 +41,7 @@ void gdt_init(void)
 	tss_flush((uint32_t)&tss_entry);
 
 #ifdef DEBUG_LOGGING
-	printf("gdt init OK\n");
+	printf("init gdt OK\n");
 #endif
 }
 

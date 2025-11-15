@@ -4,8 +4,12 @@
 #include <kernel/memory_map.h>
 #include <stdint.h>
 
-#define PAGE_SIZE 0x1000 // 4090
+#define PAGE_SIZE 0x1000 // 4096
 #define MAX_PAGE_FRAME_COUNT 1024 * 1024
+
+#define BATCH_PAGES_ALLOCED_MAX 20
+#define PAGE_DIRECTORY_LEN 1024
+#define PAGE_DIRECTORY_ENTRY_INIT 0x00000002
 
 typedef uintptr_t page_frame_t;
 #define ERROR 0xCAFEBABE
@@ -17,8 +21,11 @@ enum page_frame_state {
 
 void page_frames_init(multiboot_info_t *mbd);
 
-page_frame_t kalloc_frame_int(void);
+page_frame_t kalloc_frame(void);
 
 void kfree_frame(page_frame_t a);
+
+extern void loadPageDirectory(uint32_t addr);
+extern void enablePaging(void);
 
 #endif

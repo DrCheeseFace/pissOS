@@ -10,6 +10,7 @@
 global_variable enum page_frame_state page_frames_state[MAX_PAGE_FRAME_COUNT];
 global_variable uintptr_t page_frames_start_addr;
 global_variable size_t page_frames_len = 0;
+global_variable page_frame_t pre_frames[BATCH_PAGES_ALLOCED_MAX];
 
 internal void set_page_frames_start_addr(multiboot_info_t *mbd,
 					 mmap_entry_t **entry_with_frame_addr);
@@ -94,13 +95,13 @@ internal void set_page_frames_start_addr(multiboot_info_t *mbd,
 	entry_with_frame_addr = NULL;
 }
 
-page_frame_t kalloc_frame_int(void)
+internal page_frame_t kalloc_frame_int(void)
 {
 	uint32_t i = 0;
 	while (page_frames_state[i] != PAGE_FRAME_STATE_FREE) {
 		i++;
 		if (i == page_frames_len) {
-			printf("WARNING: run out of page frames");
+			printf("WARNING: run out of page frames\n");
 			return (ERROR);
 		}
 	}
@@ -119,4 +120,26 @@ void kfree_frame(page_frame_t a)
 		uint32_t index = ((uint32_t)a) / 0x1000;
 		page_frames_state[index] = PAGE_FRAME_STATE_FREE;
 	}
+}
+
+page_frame_t kalloc_frame(void)
+{
+	static uint8_t allocate = 1;
+	static uint8_t pframe = 0;
+	page_frame_t ret;
+
+	if (pframe == BATCH_PAGES_ALLOCED_MAX) {
+		allocate = 1;
+	}
+
+	if (allocate == 1) {
+		for (int i = 0; i < BATCH_PAGES_ALLOCED_MAX; i++) {
+			pre_frames[i] = kalloc_frame_int();
+		}
+		pframe = 0;
+		allocate = 0;
+	}
+	ret = pre_frames[pframe];
+	pframe++;
+	return (ret);
 }

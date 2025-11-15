@@ -9,4 +9,5 @@
 - [x] idt 
 - [x] timer interrupts
 - [x] keyboard interrupts 
-- [ ] paging memory management
+- [ ] can there be multile regions of free memory to allocate page frames for?
+- [x] paging memory management

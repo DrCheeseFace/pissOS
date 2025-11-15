@@ -3,6 +3,7 @@
 #include <kernel/keyboard.h>
 #include <kernel/memory_map.h>
 #include <kernel/multiboot.h>
+#include <kernel/paging.h>
 #include <kernel/ssp.h>
 #include <kernel/timer.h>
 #include <kernel/tty.h>
