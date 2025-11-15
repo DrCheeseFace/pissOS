@@ -1,8 +1,11 @@
 #ifndef _KERNEL_PAGING_H
 #define _KERNEL_PAGING_H
 
-#include <kernel/memory_map.h>
+#include <kernel/multiboot.h>
 #include <stdint.h>
+
+extern uint8_t endkernel[];
+typedef multiboot_memory_map_t mmap_entry_t;
 
 #define PAGE_SIZE 0x1000 // 4096
 #define MAX_PAGE_FRAME_COUNT 1024 * 1024
@@ -19,13 +22,14 @@ enum page_frame_state {
 	PAGE_FRAME_STATE_USED,
 };
 
-void page_frames_init(multiboot_info_t *mbd);
+void paging_init(uint32_t magic, multiboot_info_t *mbd);
 
 page_frame_t kalloc_frame(void);
 
 void kfree_frame(page_frame_t a);
 
 extern void loadPageDirectory(uint32_t addr);
+
 extern void enablePaging(void);
 
 #endif
