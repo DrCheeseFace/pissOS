@@ -32,10 +32,10 @@ void paging_init(uint32_t magic, multiboot_info_t *mbd)
 
 	page_frames_init(mbd);
 
-	page_frame_t page_directory_frame = kalloc_frame();
+	page_frame_t page_directory_frame = kmalloc_frame();
 	page_directory = (void *)page_directory_frame;
 
-	page_frame_t page_table_frame = kalloc_frame();
+	page_frame_t page_table_frame = kmalloc_frame();
 	uint32_t *first_page_table = (uint32_t *)page_table_frame;
 
 	for (uint16_t i = 0; i < PAGE_DIRECTORY_LEN; i++) {
@@ -162,7 +162,7 @@ void kfree_frame(page_frame_t a)
 	}
 }
 
-page_frame_t kalloc_frame(void)
+page_frame_t kmalloc_frame(void)
 {
 	static uint8_t allocate = 1;
 	static uint8_t pframe = 0;

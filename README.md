@@ -9,5 +9,6 @@
 - [x] idt 
 - [x] timer interrupts
 - [x] keyboard interrupts 
-- [ ] can there be multile regions of free memory to allocate page frames for?
 - [x] paging memory management
+- [ ] virtual memory management kmalloc, kfree, krealloc, kcalloc
+- [ ] can there be multile regions of free memory to allocate page frames for?
