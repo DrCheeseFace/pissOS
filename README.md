@@ -10,5 +10,6 @@
 - [x] timer interrupts
 - [x] keyboard interrupts 
 - [x] enable paging
+- [ ] bitmap to some other physical memory allocators
 - [ ] virtual memory management kmalloc, kfree, krealloc, kcalloc
 - [ ] can there be multile regions of free memory to allocate page frames for?

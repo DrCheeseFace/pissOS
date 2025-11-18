@@ -9,27 +9,31 @@
 #define MAX_PAGE_FRAME_COUNT 1024 * 1024
 
 #define BATCH_PAGES_ALLOCED_MAX 20
-#define PAGE_DIRECTORY_LEN 1024
+#define PAGES_PER_TABLE 1024
 #define PAGE_DIRECTORY_ENTRY_INIT 0x00000002
 
 #define ERROR 0xCAFEBABE
 
-enum page_frame_state {
-	PAGE_FRAME_STATE_FREE = 0x00,
-	PAGE_FRAME_STATE_USED,
-};
+typedef uintptr_t page_frame_t;
+
+typedef uint8_t page_state_t;
+#define PAGE_STATE_FREE 0
+#define PAGE_STATE_USED 1
+
+struct page {
+	page_frame_t start;
+	uint32_t page_count;
+} __attribute__((packed));
 
 extern uint8_t endkernel[];
 
 typedef multiboot_memory_map_t mmap_entry_t;
 
-typedef uintptr_t page_frame_t;
-
 void paging_init(uint32_t magic, multiboot_info_t *mbd);
 
-page_frame_t kmalloc_frame(void);
-
 void kfree_frame(page_frame_t a);
+
+page_frame_t kmalloc_frame(void);
 
 extern void loadPageDirectory(uint32_t addr);
 

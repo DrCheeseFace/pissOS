@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-global_variable uint32_t (*page_directory)[PAGE_DIRECTORY_LEN];
-global_variable enum page_frame_state page_frames_state[MAX_PAGE_FRAME_COUNT];
+global_variable uint32_t *page_directory;
+global_variable page_state_t page_frames_state[MAX_PAGE_FRAME_COUNT];
 global_variable uintptr_t page_frames_start_addr;
 global_variable size_t page_frames_len = 0;
 global_variable page_frame_t pre_frames[BATCH_PAGES_ALLOCED_MAX];
@@ -16,6 +16,7 @@ internal void set_page_frames_start_addr(multiboot_info_t *mbd,
 					 mmap_entry_t **entry_with_frame_addr);
 
 internal void page_frames_init(multiboot_info_t *mbd);
+internal page_frame_t kmalloc_frame_int(void);
 
 void paging_init(uint32_t magic, multiboot_info_t *mbd)
 {
@@ -32,22 +33,24 @@ void paging_init(uint32_t magic, multiboot_info_t *mbd)
 
 	page_frames_init(mbd);
 
-	page_frame_t page_directory_frame = kmalloc_frame();
-	page_directory = (void *)page_directory_frame;
-
-	page_frame_t page_table_frame = kmalloc_frame();
-	uint32_t *first_page_table = (uint32_t *)page_table_frame;
-
-	for (uint16_t i = 0; i < PAGE_DIRECTORY_LEN; i++) {
-		((uint32_t *)page_directory)[i] = PAGE_DIRECTORY_ENTRY_INIT;
+	page_frame_t page_directory_phys = kmalloc_frame_int();
+	if (page_directory_phys == (page_frame_t)ERROR) {
+		abort("ERROR: failed to allocate frame for page directory");
 	}
-	for (uint16_t i = 0; i < 1024; i++) {
-		first_page_table[i] = (i * 0x1000) | 3;
+	page_directory = (uint32_t *)page_directory_phys;
+
+	page_frame_t first_page_table_phys = kmalloc_frame_int();
+	if (first_page_table_phys == (page_frame_t)ERROR) {
+		abort("ERROR: failed to allocate frame for first page table");
+	}
+	uint32_t *first_page_table = (uint32_t *)first_page_table_phys;
+	for (uint16_t i = 0; i < PAGES_PER_TABLE; i++) {
+		first_page_table[i] = (i * PAGE_SIZE) | 3;
 	}
 
-	((uint32_t *)page_directory)[0] = page_table_frame | 3;
+	page_directory[0] = first_page_table_phys | 3;
 
-	loadPageDirectory((uint32_t)page_directory);
+	loadPageDirectory(page_directory_phys);
 	enablePaging();
 
 #ifdef DEBUG_LOGGING
@@ -74,7 +77,7 @@ internal void page_frames_init(multiboot_info_t *mbd)
 			break;
 		}
 
-		page_frames_state[i] = PAGE_FRAME_STATE_FREE;
+		page_frames_state[i] = PAGE_STATE_FREE;
 		page_frames_len++;
 
 		current_addr += PAGE_SIZE;
@@ -135,30 +138,28 @@ internal void set_page_frames_start_addr(multiboot_info_t *mbd,
 	entry_with_frame_addr = NULL;
 }
 
-internal page_frame_t kalloc_frame_int(void)
+internal page_frame_t kmalloc_frame_int(void)
 {
 	uint32_t i = 0;
-	while (page_frames_state[i] != PAGE_FRAME_STATE_FREE) {
+	while (page_frames_state[i] != PAGE_STATE_FREE) {
 		i++;
 		if (i == page_frames_len) {
 			printf("WARNING: run out of page frames\n");
 			return (ERROR);
 		}
 	}
-	page_frames_state[i] = PAGE_FRAME_STATE_USED;
+	page_frames_state[i] = PAGE_STATE_USED;
 	return (page_frames_start_addr + (i * PAGE_SIZE));
 }
 
 void kfree_frame(page_frame_t a)
 {
-	a = a - page_frames_start_addr;
-	if (a == 0) {
-		uint32_t index = (uint32_t)a;
-		page_frames_state[index] = PAGE_FRAME_STATE_USED;
-	}
-	else {
-		uint32_t index = ((uint32_t)a) / 0x1000;
-		page_frames_state[index] = PAGE_FRAME_STATE_FREE;
+	page_frame_t offset = a - page_frames_start_addr;
+
+	uint32_t index = ((uint32_t)offset) / PAGE_SIZE;
+
+	if (index < page_frames_len) {
+		page_frames_state[index] = PAGE_STATE_FREE;
 	}
 }
 
@@ -174,7 +175,7 @@ page_frame_t kmalloc_frame(void)
 
 	if (allocate == 1) {
 		for (int i = 0; i < BATCH_PAGES_ALLOCED_MAX; i++) {
-			pre_frames[i] = kalloc_frame_int();
+			pre_frames[i] = kmalloc_frame_int();
 		}
 		pframe = 0;
 		allocate = 0;
