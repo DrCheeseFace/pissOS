@@ -35,8 +35,8 @@ void kfree_frame(page_frame_t a);
 
 page_frame_t kmalloc_frame(void);
 
-extern void loadPageDirectory(uint32_t addr);
+extern void _loadPageDirectory(uint32_t addr);
 
-extern void enablePaging(void);
+extern void _enablePaging(void);
 
 #endif

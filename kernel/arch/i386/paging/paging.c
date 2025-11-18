@@ -50,8 +50,8 @@ void paging_init(uint32_t magic, multiboot_info_t *mbd)
 
 	page_directory[0] = first_page_table_phys | 3;
 
-	loadPageDirectory(page_directory_phys);
-	enablePaging();
+	_loadPageDirectory(page_directory_phys);
+	_enablePaging();
 
 #ifdef DEBUG_LOGGING
 	printf("init paging OK\n");

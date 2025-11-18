@@ -2,6 +2,6 @@
 .type tss_flush, @function
 
 tss_flush:
-    movl $0x2B, %eax 
+    movl $0x2B, %eax
     LTR %ax
     RET
